@@ -1,5 +1,15 @@
 package com.formacionspring.app.apirest.dao;
 
-public interface ClienteDao {
+import java.util.List;
 
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import com.formacionspring.app.apirest.entity.Cliente;
+
+@Repository
+public interface ClienteDao extends CrudRepository<Cliente, Long>{
+
+	
+	
 }
