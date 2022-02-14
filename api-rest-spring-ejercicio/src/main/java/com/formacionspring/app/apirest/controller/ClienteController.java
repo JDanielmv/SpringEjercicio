@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.formacionspring.app.apirest.entity.Cliente;
-import com.formacionspring.app.apirest.service.ArticuloService;
 import com.formacionspring.app.apirest.service.ClienteService;
 
 @RestController
@@ -98,18 +97,7 @@ public class ClienteController {
 			}else {
 				try {
 					servicio.delete(id);
-					String nombreFotoAnterior = clienteBorrado.getImagen();
 					
-					if(nombreFotoAnterior !=null && nombreFotoAnterior.length()>0 ) {
-						
-						Path rutaFotoAnterior= Paths.get("uploads").resolve(nombreFotoAnterior).toAbsolutePath();
-						File archivoFotoanterior = rutaFotoAnterior.toFile();
-						
-						if(archivoFotoanterior.exists() && archivoFotoanterior.canRead() ) {
-							
-							archivoFotoanterior.delete();
-						}
-					}
 				} catch (DataAccessException e) {
 					response.put("mensaje", "Error al borrar el cliente ");
 					response.put("error", e.getMessage().concat("_ ").concat(e.getMostSpecificCause().getMessage()));

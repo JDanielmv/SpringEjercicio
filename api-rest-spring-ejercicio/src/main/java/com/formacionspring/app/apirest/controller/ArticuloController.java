@@ -1,23 +1,33 @@
 package com.formacionspring.app.apirest.controller;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.formacionspring.app.apirest.entity.Articulo;
 import com.formacionspring.app.apirest.service.ArticuloService;
@@ -93,7 +103,7 @@ public class ArticuloController {
 			}else {
 				try {
 					servicio.delete(id);
-					String nombreFotoAnterior = clienteBorrado.getImagen();
+					String nombreFotoAnterior = articuloBorrado.getImagen();
 					
 					if(nombreFotoAnterior !=null && nombreFotoAnterior.length()>0 ) {
 						
@@ -115,6 +125,66 @@ public class ArticuloController {
 		response.put("mensaje", "El articulo ha sido borrado con exito");
 		response.put("articulo", articuloBorrado);
 		return new ResponseEntity<Map<String,Object>>(response,HttpStatus.OK);
+	}
+	
+	@PostMapping("/articulos/upload")
+	public ResponseEntity<?> uploadImagen(@RequestParam("archivo")MultipartFile archivo, @RequestParam("id")Long id){
+		Map<String,Object> response=new HashMap<>();
+		Articulo articulo=servicio.findById(id);
+		if(!archivo.isEmpty()) {
+			String nombreArchivo= UUID.randomUUID().toString()+"_"+archivo.getOriginalFilename().replace(" ","");
+			Path rutaArchivo=Paths.get("uploads").resolve(nombreArchivo).toAbsolutePath();
+			try {
+				Files.copy(archivo.getInputStream(), rutaArchivo);
+			} catch (IOException e) {
+				response.put("mensaje", "Error al intentar subir la imagen ");
+				response.put("error", e.getMessage().concat("_ ").concat(e.getCause().getMessage()));
+				return new ResponseEntity<Map<String,Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			
+			String nombreFotoAnterior = articulo.getImagen();
+			
+			if(nombreFotoAnterior !=null && nombreFotoAnterior.length()>0 ) {
+				
+				Path rutaFotoAnterior= Paths.get("uploads").resolve(nombreFotoAnterior).toAbsolutePath();
+				File archivoFotoanterior = rutaFotoAnterior.toFile();
+				
+				if(archivoFotoanterior.exists() && archivoFotoanterior.canRead() ) {
+					
+					archivoFotoanterior.delete();
+				
+				}
+			}
+
+			articulo.setImagen(nombreArchivo);
+			servicio.save(articulo);
+			response.put("mensaje", "Se ha subido correctamente el archivo: " + nombreArchivo);
+			response.put("articulo", articulo);
+			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.OK);
+		}else {
+			response.put("Archivo", "Archivo vacio");
+		}
+		return new ResponseEntity<Map<String,Object>>(response,HttpStatus.CREATED);
+	}
+	
+	@GetMapping("/articulos/uploads/img/{nombreImagen:.+}")
+	public ResponseEntity<Resource> verImagen(@PathVariable String nombreImagen){
+		Path rutaArchivo=Paths.get("uploads").resolve(nombreImagen).toAbsolutePath();
+		Resource recurso=null;
+		try {
+			recurso= new UrlResource(rutaArchivo.toUri());
+			
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		
+		if(!recurso.exists()&&!recurso.isReadable()) {
+			throw new RuntimeException("Error no se puede cargar la imagen " +nombreImagen);
+		}
+		
+		HttpHeaders cabecera=new HttpHeaders();
+		cabecera.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\""+recurso.getFilename()+"\"");
+		return new ResponseEntity<Resource>(recurso,cabecera,HttpStatus.OK);
 	}
 
 }
