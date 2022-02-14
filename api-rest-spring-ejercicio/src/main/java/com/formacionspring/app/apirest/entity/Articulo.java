@@ -18,7 +18,7 @@ public class Articulo implements Serializable{
 		@GeneratedValue(strategy= GenerationType.IDENTITY)
 		private long codArticulo; 
 		
-		@Column(nullable=false)//con esto conseguimos que los atributos no puedan ser nulos
+		@Column(nullable=false)
 		private String nombre;
 		
 		private String descripcion;
