@@ -9,11 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-<<<<<<< HEAD
-//ewfgwef
-=======
 
->>>>>>> origin/cristian
 @Entity
 @Table( name="articulos")
 public class Articulo implements Serializable{
