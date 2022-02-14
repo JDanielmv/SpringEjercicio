@@ -8,9 +8,11 @@ import org.springframework.stereotype.Repository;
 
 
 import com.formacionspring.app.apirest.entity.Articulo;
+import com.formacionspring.app.apirest.entity.Compra;
 @Repository
 public interface ArticuloDao extends CrudRepository<Articulo, Long>{
 
-	
+	@Query("from Compra")
+	public List<Compra> findAllCompras();
 	
 }
