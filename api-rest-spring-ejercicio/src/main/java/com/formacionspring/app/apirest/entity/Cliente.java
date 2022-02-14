@@ -19,11 +19,14 @@ public class Cliente implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
-	private long codCliente;
+	private long codCliente; 
+	
 	@Column(nullable=false)
 	private String nombre;
+	
 	@Column(nullable=false)
 	private String apellido;
+	
 	private String empresa;
 	private String puesto;
 	private int cp;
@@ -97,6 +100,18 @@ public class Cliente implements Serializable{
 	
 	
 	
+	public long getCodCliente() {
+		return codCliente;
+	}
+
+
+	public void setCodCliente(long codCliente) {
+		this.codCliente = codCliente;
+	}
+
+
+
+
 	/**
 	 * 
 	 */

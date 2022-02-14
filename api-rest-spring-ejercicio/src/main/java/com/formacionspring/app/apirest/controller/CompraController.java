@@ -1,5 +1,6 @@
 package com.formacionspring.app.apirest.controller;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,79 +18,74 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.formacionspring.app.apirest.entity.Cliente;
-import com.formacionspring.app.apirest.service.ClienteService;
-
+import com.formacionspring.app.apirest.entity.Compra;
+import com.formacionspring.app.apirest.service.CompraService;
 @RestController
 @RequestMapping("/app")
-public class ClienteController {
+public class CompraController {
 	
 	@Autowired
-	private ClienteService servicio;
+	private CompraService servicio;
 	
 
 	
-	@GetMapping("/clientes")
-	public List<Cliente> clientes(){
+	@GetMapping("/compras")
+	public List<Compra> compras(){
 		return servicio.findAll();
 	}
 	
-	@GetMapping("/clientes/{id}")
-	public ResponseEntity<?> mostrarClientes(@PathVariable Long id){
-		Cliente cliente=null;
+	@GetMapping("/compras/{id}")
+	public ResponseEntity<?> mostrarCompras(@PathVariable Long id){
+		Compra Compra=null;
 		Map<String,Object> response=new HashMap<>();
 		
 		try {
-			cliente=servicio.findById(id);
+			Compra=servicio.findById(id);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar consulta base de datos");
 			response.put("error", e.getMessage().concat("_ ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		if(cliente==null) {
-			response.put("mensaje", "El cliente ID: ".concat(id.toString().concat(" no existe en la base de datos")));
+		if(Compra==null) {
+			response.put("mensaje", "El Compra ID: ".concat(id.toString().concat(" no existe en la base de datos")));
 			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.NOT_FOUND);
 
 		}
 		
-		return new ResponseEntity<Cliente>(cliente,HttpStatus.OK);
+		return new ResponseEntity<Compra>(Compra,HttpStatus.OK);
 	}
 	
-	@PutMapping("/clientes/{id}")
-	public ResponseEntity<?> updateCliente( @RequestBody Cliente cliente, @PathVariable long id) {
-		Cliente clienteActual=servicio.findById(id);
+	@PutMapping("/compras/{id}")
+	public ResponseEntity<?> updateCompra( @RequestBody Compra compra, @PathVariable long id) {
+		Compra compraActual=servicio.findById(id);
 		Map<String,Object> response=new HashMap<>();
 		try {
-			clienteActual.setNombre(cliente.getNombre());
-			clienteActual.setApellido(cliente.getApellido());
-			clienteActual.setEmpresa(cliente.getEmpresa());
-			clienteActual.setPuesto(cliente.getPuesto());
-			clienteActual.setCp(cliente.getCp());
-			clienteActual.setProvincia(cliente.getProvincia());
-			clienteActual.setTelefono(cliente.getTelefono());
-			clienteActual.setFechaNacimiento(cliente.getFechaNacimiento());
-			servicio.save(clienteActual);
+			compraActual.setFecha(compra.getFecha());
+			compraActual.setCodCliente(compra.getCodCliente());
+			compraActual.setCodArticulo(compra.getCodArticulo());
+			compraActual.setUnidades(compra.getUnidades());
+			servicio.save(compraActual);
 		
 		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al realizar modificacion en el cliente ");
+			response.put("mensaje", "Error al realizar modificacion en el Compra ");
 			response.put("error", e.getMessage().concat("_ ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		response.put("mensaje", "El cliente ha sido modificado  con exito");
-		response.put("cliente", clienteActual);
+		response.put("mensaje", "El Compra ha sido modificado  con exito");
+		response.put("Compra", compraActual);
 		return new ResponseEntity<Map<String,Object>>(response,HttpStatus.CREATED);
 	}
 	
-	@DeleteMapping("/clientes/{id}")
+	@DeleteMapping("/compras/{id}")
 	public ResponseEntity<?> deleteCleinte(@PathVariable Long id) {
-		Cliente clienteBorrado=null;
+		Compra compraBorrado=null;
 		
 		Map<String,Object> response=new HashMap<>();
 				
-			clienteBorrado=servicio.findById(id);
-			if(clienteBorrado==null) {
-				response.put("mensaje", "El cliente ID: ".concat(id.toString().concat(" no existe en la base de datos")));
+			compraBorrado=servicio.findById(id);
+			if(compraBorrado==null) {
+				response.put("mensaje", "La Compra con el ID: ".concat(id.toString().concat(" no existe en la base de datos")));
 				return new ResponseEntity<Map<String,Object>>(response,HttpStatus.NOT_FOUND);
 
 			}else {
@@ -97,30 +93,30 @@ public class ClienteController {
 					servicio.delete(id);
 					
 				} catch (DataAccessException e) {
-					response.put("mensaje", "Error al borrar el cliente ");
+					response.put("mensaje", "Error al borrar la Compra ");
 					response.put("error", e.getMessage().concat("_ ").concat(e.getMostSpecificCause().getMessage()));
 					return new ResponseEntity<Map<String,Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 			}
 
-		response.put("mensaje", "El cliente ha sido borrado con exito");
-		response.put("cliente", clienteBorrado);
+		response.put("mensaje", "La Compra ha sido borrado con exito");
+		response.put("Compra", compraBorrado);
 		return new ResponseEntity<Map<String,Object>>(response,HttpStatus.OK);
 	}
 	
-	@PostMapping("/clientes")
-	public ResponseEntity<?> save(@RequestBody Cliente cliente) {
-		Cliente clienteNew=null;
+	@PostMapping("/compras")
+	public ResponseEntity<?> save(@RequestBody Compra Compra) {
+		Compra compraNew=null;
 		Map<String,Object> response=new HashMap<>();
 		try {
-			clienteNew=servicio.save(cliente);
+			compraNew=servicio.save(Compra);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar insercion en la base de datos");
 			response.put("error", e.getMessage().concat("_ ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		response.put("mensaje", "El cliente ha sido creado con exito");
-		response.put("cliente", clienteNew);
+		response.put("mensaje", "El Compra ha sido creado con exito");
+		response.put("Compra", compraNew);
 		return new ResponseEntity<Map<String,Object>>(response,HttpStatus.CREATED);
 		
 	}

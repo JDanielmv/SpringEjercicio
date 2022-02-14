@@ -83,8 +83,9 @@ public class ArticuloController {
 			response.put("error", e.getMessage().concat("_ ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		response.put("mensaje", "El articulo ha sido modificado  con exito");
+		
 		response.put("articulo", articuloActual);
+		response.put("mensaje", "El articulo ha sido modificado  con exito");
 		return new ResponseEntity<Map<String,Object>>(response,HttpStatus.CREATED);
 	}
 	
@@ -185,6 +186,23 @@ public class ArticuloController {
 		HttpHeaders cabecera=new HttpHeaders();
 		cabecera.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\""+recurso.getFilename()+"\"");
 		return new ResponseEntity<Resource>(recurso,cabecera,HttpStatus.OK);
+	}
+	
+	@PostMapping("/articulos")
+	public ResponseEntity<?> save(@RequestBody Articulo articulo) {
+		Articulo articuloNew=null;
+		Map<String,Object> response=new HashMap<>();
+		try {
+			articuloNew=servicio.save(articulo);
+		} catch (DataAccessException e) {
+			response.put("mensaje", "Error al realizar insercion en la base de datos");
+			response.put("error", e.getMessage().concat("_ ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		response.put("mensaje", "El articulo ha sido creado con exito");
+		response.put("cliente", articuloNew);
+		return new ResponseEntity<Map<String,Object>>(response,HttpStatus.CREATED);
+		
 	}
 
 }

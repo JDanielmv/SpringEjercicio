@@ -3,8 +3,11 @@ package com.formacionspring.app.apirest.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,29 +18,46 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @Table( name="compras")
 public class Compra implements Serializable {
-
 	@Id
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	private long codCompra;
+	
+	@Column(nullable=false)
+	private Date fecha;
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="cod_cliente")
 	@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 	private Cliente codCliente;
 	
-	@Id
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="cod_articulo")
 	@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+
+
 	private Articulo codArticulo;
 	
-	@Id
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
-	private Date fecha;
-	
+
+
 	private int unidades;
 	
 	
 	
 	
+	public long getCodCompra() {
+		return codCompra;
+	}
+
+
+
+
+	public void setCodCompra(long codCompra) {
+		this.codCompra = codCompra;
+	}
+
+
+
+
 	public Cliente getCodCliente() {
 		return codCliente;
 	}
