@@ -11,6 +11,6 @@ INSERT INTO articulos(nombre,descripcion,precio,unidades,stockseg) VALUES ("past
 
 
 INSERT INTO compras(cod_cliente,cod_articulo,fecha,unidades) VALUES (1,1,"2022-02-11",3);
-INSERT INTO compras(cod_cliente,cod_articulo,fecha,unidades) VALUES (2,2,"2022-04-11",4)
-INSERT INTO compras(cod_cliente,cod_articulo,fecha,unidades) VALUES (3,3,"2022-05-11",6)
-INSERT INTO compras(cod_cliente,cod_articulo,fecha,unidades) VALUES (4,4,"2022-06-11",5)
+INSERT INTO compras(cod_cliente,cod_articulo,fecha,unidades) VALUES (2,2,"2022-04-11",4);
+INSERT INTO compras(cod_cliente,cod_articulo,fecha,unidades) VALUES (3,3,"2022-05-11",6);
+INSERT INTO compras(cod_cliente,cod_articulo,fecha,unidades) VALUES (4,4,"2022-06-11",5);
