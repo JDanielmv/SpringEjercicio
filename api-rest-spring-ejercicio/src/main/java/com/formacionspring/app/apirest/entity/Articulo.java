@@ -9,6 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 @Entity
 @Table( name="articulos")
 public class Articulo implements Serializable{
